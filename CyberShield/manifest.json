@@ -2,8 +2,8 @@
   "manifest_version": 3,
   "name": "CyberShield",
   "version": "1.0",
-  "description": "CyberShield enhances web security by analyzing website safety in real-time. It fetches the URL checks for potential threats. The extension provides a risk assessment overlay for informed browsing.",
-  "permissions": ["activeTab"],
+  "description": "CyberShield analyzes website safety in real-time and assessing risks to enhance secure browsing.",
+  "permissions": ["activeTab", "storage"],
   "background": {
     "service_worker": "background.js"
   },
@@ -14,7 +14,13 @@
     }
   ],
   "action": {
-    "default_popup": "popup.html"
+    "default_popup": "popup.html",
+	"default_icon": "icon.png"
+  },
+  "icons": {
+    "16": "icon.png",
+    "48": "icon.png",
+    "128": "icon.png"
   },
   "host_permissions": [
     "http://*/*",

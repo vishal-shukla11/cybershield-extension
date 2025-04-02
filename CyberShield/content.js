@@ -12,7 +12,7 @@
   }
 
   function formatURL(url) {
-    return url.length > 60 ? `${url.slice(0, 20)}...${url.slice(-20)}` : url;
+    return url.length > 60 ? `${url.slice(0, 10)}...${url.slice(-10)}` : url;
   }
 
   function isValidURL(url) {
@@ -23,6 +23,36 @@
       return false;
     }
   }
+
+async function fetchSitePermissions() {
+  const permissionsToCheck = {
+    'geolocation': 'This Website Can Access Your Location',
+    'notifications': 'This Website Can Send Notifications',
+    'camera': 'This Website Can Access Your Camera',
+    'microphone': 'This Website Can Access Your Microphone',
+    'clipboard-read': 'This Website Can Read Content From Clipboard',
+    'clipboard-write': 'This Website Can Write Content To Clipboard',
+    'persistent-storage': 'This Website Can Store Data Persistently On Your Device',
+    'idle-detection': 'This Website Can Detect Your Inactivity'
+  };
+
+  let permissionsGranted = [];
+
+  for (const [permission, description] of Object.entries(permissionsToCheck)) {
+    try {
+      const result = await navigator.permissions.query({ name: permission });
+      if (result.state === 'granted') {
+        permissionsGranted.push(`👉 ${description}`);
+      }
+    } catch (error) {
+      console.warn(`Permission ${permission} not supported:`, error);
+    }
+  }
+
+  return permissionsGranted.length > 0 
+    ? permissionsGranted.join("<br>") 
+    : "✅ No special permissions granted.";
+}
 
   function fetchDomainIP(url) {
     const domain = new URL(url).hostname;
@@ -37,21 +67,30 @@
   }
 
   function fetchAbuseIPDB(ip) {
-    const apiKey = "ABUSEIPDB_API_KEY";
-    const abuseUrl = `https://api.abuseipdb.com/api/v2/check?ipAddress=${ip}`;
+    return new Promise((resolve, reject) => {
+      chrome.storage.local.get(['abuseKey'], function(result) {
+        if (!result.abuseKey) {
+          reject('AbuseIPDB API key not found. Please set it.');
+          return;
+        }
 
-    return sendFetchMessage(abuseUrl, {
-      method: "GET",
-      headers: {
-        "Key": apiKey,
-        "Accept": "application/json"
-      }
-    })
-      .then(data => data.data)
-      .catch(error => {
-        console.error("Error fetching AbuseIPDB data:", error);
-        return null;
+        const abuseUrl = `https://api.abuseipdb.com/api/v2/check?ipAddress=${ip}`;
+
+        sendFetchMessage(abuseUrl, {
+          method: "GET",
+          headers: {
+            "Key": result.abuseKey,
+            "Accept": "application/json"
+          }
+        })
+          .then(data => data.data)
+          .then(data => resolve(data))
+          .catch(error => {
+            console.error("Error fetching AbuseIPDB data:", error);
+            reject(error);
+          });
       });
+    });
   }
 
   function VirusTotalScan(currentURL) {
@@ -67,26 +106,34 @@
   }
 
   function FetchVirusTotal(analysisId) {
-    const apiKey = 'VIRUSTOTAL_API_KEY';
-    const headers = { 'x-apikey': apiKey };
+    return new Promise((resolve, reject) => {
+      chrome.storage.local.get(['virusKey'], function(result) {
+        if (!result.virusKey) {
+          reject('VirusTotal API key not found. Please set it.');
+          return;
+        }
 
-    return sendFetchMessage(`https://www.virustotal.com/api/v3/analyses/${analysisId}`, {
-      method: 'GET',
-      headers: headers
-    })
-    .then(response => {
-      const status = response.data?.attributes?.status;
-      const stats = response.data?.attributes?.stats || {};
+        const headers = { 'x-apikey': result.virusKey };
 
-      if (status === 'completed') {
-        return stats;
-      } else {
-        return null;
-      }
-    })
-    .catch(error => {
-      console.error("Error fetching scan status:", error);
-      return null;
+        sendFetchMessage(`https://www.virustotal.com/api/v3/analyses/${analysisId}`, {
+          method: 'GET',
+          headers: headers
+        })
+        .then(response => {
+          const status = response.data?.attributes?.status;
+          const stats = response.data?.attributes?.stats || {};
+
+          if (status === 'completed') {
+            resolve(stats);
+          } else {
+            resolve(null);
+          }
+        })
+        .catch(error => {
+          console.error("Error fetching scan status:", error);
+          reject(error);
+        });
+      });
     });
   }
 
@@ -114,7 +161,7 @@
       background: rgba(15, 15, 15, 0.95);
       color: white;
       padding: 15px;
-      width: 400px;
+      width: 500px;
       z-index: 9999;
       font-family: 'Orbitron', sans-serif;
       font-size: 14px;
@@ -168,44 +215,52 @@
           ipElem.textContent = `📌 IP: ${ip}`;
           overlay.appendChild(urlElem);
           overlay.appendChild(ipElem);
+		  
+		  fetchSitePermissions().then(permissions => {
+            const permissionElem = document.createElement("div");
+            permissionElem.innerHTML = `🔑 Permissions Granted:<br> ${permissions}`;
+            overlay.appendChild(permissionElem);
 
-          fetchAbuseIPDB(ip).then(abuseData => {
-            if (abuseData) {
-              const abuseScore = abuseData.abuseConfidenceScore;
-              const abuseElem = document.createElement("div");
-              abuseElem.innerHTML = `⚠️ Abuse Score: <span class="risk-score">${abuseScore}%</span> - ${getRiskLevel(abuseScore)}`;
-              overlay.appendChild(abuseElem);
-            }
-          });
-
-          const scanStatusElem = document.createElement("div");
-          scanStatusElem.textContent = "🛡️ Checking VirusTotal...";
-          overlay.appendChild(scanStatusElem);
-
-          VirusTotalScan(currentURL)
-            .then(analysisId => {
-              function checkScanStatus() {
-                FetchVirusTotal(analysisId)
-                  .then(scanData => {
-                    if (scanData) {
-                      const { malicious, suspicious, harmless, undetected } = scanData;
-                      const total = malicious + suspicious + harmless + undetected;
-                      const score = ((malicious * 3 + suspicious * 2) / total) * 100;
-                      scanStatusElem.innerHTML = `🛡️ VirusTotal Score: <span class="risk-score">${Math.round(score)}%</span> - ${getRiskLevel(score)}`;
-                      clearInterval(statusInterval);
-                    }
-                  })
-                  .catch(error => {
-                    console.error("Error checking scan status:", error);
-                  });
+            fetchAbuseIPDB(ip).then(abuseData => {
+              if (abuseData) {
+                const abuseScore = abuseData.abuseConfidenceScore;
+                const abuseElem = document.createElement("div");
+                abuseElem.innerHTML = `⚠️ Abuse Score: <span class="risk-score">${abuseScore}%</span> - ${getRiskLevel(abuseScore)}`;
+                overlay.appendChild(abuseElem);
               }
-
-              const statusInterval = setInterval(checkScanStatus, 5000);
-            })
-            .catch(error => {
-              console.error("Error fetching VirusTotal scan:", error);
             });
 
+            chrome.storage.local.get(['virusKey'], function(result) {
+              if (result.virusKey) {
+                const scanStatusElem = document.createElement("div");
+                scanStatusElem.textContent = "🛡️ Checking VirusTotal...";
+                overlay.appendChild(scanStatusElem);
+                
+                VirusTotalScan(currentURL)
+                  .then(analysisId => {
+                    function checkScanStatus() {
+                      FetchVirusTotal(analysisId)
+                        .then(scanData => {
+                          if (scanData) {
+                            const { malicious, suspicious, harmless, undetected } = scanData;
+                            const total = malicious + suspicious + harmless + undetected;
+                            const score = ((malicious * 3 + suspicious * 2) / total) * 100;
+                            scanStatusElem.innerHTML = `🛡️ VirusTotal Score: <span class="risk-score">${Math.round(score)}%</span> - ${getRiskLevel(score)}`;
+                            clearInterval(statusInterval);
+                          }
+                        })
+                        .catch(error => {
+                          console.error("Error checking scan status:", error);
+                        });
+                    }		
+                    const statusInterval = setInterval(checkScanStatus, 5000);
+                  })
+                  .catch(error => {
+                    console.error("Error fetching VirusTotal scan:", error);
+                  });
+              }
+            });
+          });  
           document.body.appendChild(overlay);
         }
       })
