@@ -89,9 +89,6 @@ We welcome contributions to improve CyberShield! Here's how you can help:
 4. Push to the branch (`git push origin feature/AmazingFeature`)
 5. Open a Pull Request
 
-## 📄 License
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
 ## 👤 Authors
 - **Samrat Sarkar**
   - LinkedIn: [samratsarkar9999](https://www.linkedin.com/in/samratsarkar9999/)
