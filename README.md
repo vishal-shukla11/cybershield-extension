@@ -1,58 +1,113 @@
-# CyberShield Chrome Extension
+# 🛡️ CyberShield Chrome Extension
 
-CyberShield is a Chrome extension designed to protect users from phishing websites and malicious content. It checks the safety of websites in real-time by analyzing the URL, IP reputation, and scanning for malicious activity using services like AbuseIPDB and VirusTotal. It provides a risk assessment overlay for informed browsing.
+## 📝 Description
+CyberShield is a powerful Chrome extension designed to protect users from phishing websites and malicious content. It provides real-time website safety analysis by checking URLs, IP reputation, and scanning for malicious activity using services like AbuseIPDB and VirusTotal. The extension offers an intuitive risk assessment overlay for informed and secure browsing.
 
-## Features
+## ✨ Features
+- 🔍 Real-time website URL analysis
+- 🌐 IP reputation checking via AbuseIPDB
+- 🦠 VirusTotal threat scanning
+- 📊 Risk assessment overlay
+- 🔑 Customizable API key management
+- 🛡️ Real-time threat detection
+- 📱 User-friendly interface
+- 🔒 Secure API key storage
 
-- Analyzes website URLs and provides risk assessment.
-- Fetches domain IP and checks reputation via AbuseIPDB.
-- Scans the URL with VirusTotal for potential threats.
-- Real-time risk analysis with detailed overlays on the website.
-- Users enter their own API keys for customization.
+## 🚀 Installation
 
-## Installation and Usage
+### 📥 Prerequisites
+- Google Chrome browser
+- AbuseIPDB API key
+- VirusTotal API key
 
-1. **Clone the Repository:**
-
+### ⚙️ Setup
+1. Clone the repository:
    ```bash
    git clone https://github.com/samrat-sarkar/cybershield-extension.git
    cd cybershield-extension
    ```
 
-2. **Load the Extension into Chrome:**
+2. Load the Extension in Chrome:
+   - Open Chrome and navigate to `chrome://extensions/`
+   - Enable **Developer Mode** (top-right corner)
+   - Click **Load Unpacked** and select the extension folder
 
-   - Open Chrome and go to `chrome://extensions/`
-   - Enable **Developer Mode** (top-right corner).
-   - Click **Load Unpacked** and select the folder where you have the extension files.
+3. Configure API Keys:
+   - Click the extension icon in Chrome toolbar
+   - Enter your AbuseIPDB and VirusTotal API keys
+   - Click "Save API Keys" to store them securely
 
-3. **Enter API Keys:**
+## 💻 Usage
 
-   - Click the extension icon in the Chrome toolbar.
-   - Enter your **AbuseIPDB API Key** and **VirusTotal API Key** in the popup.
-   - Click "Save API Keys" to store them.
+### 🎮 Basic Usage
+1. Visit any website
+2. The extension automatically analyzes the site's safety
+3. View the risk assessment overlay for detailed information
 
-4. **Use the Extension:**
+### ⚙️ Features in Action
+- Real-time URL analysis
+- IP reputation checking
+- Malware scanning
+- Risk level assessment
+- Detailed threat intelligence
 
-   - Visit any website, and the extension will analyze its safety.
-   - The risk level and threat intelligence will be displayed in a floating overlay.
+## 🛠️ Technical Details
+- Built with JavaScript and Chrome Extension APIs
+- Integrates with multiple security services
+- Secure local storage for API keys
+- Real-time threat detection
+- Cross-platform compatibility
+- Modular architecture
 
-## APIs Used
+## 🔒 Security Features
+- Secure API key storage using chrome.storage.local
+- Real-time threat detection
+- IP reputation checking
+- URL safety analysis
+- Malware scanning
+- Privacy-focused design
 
-- **AbuseIPDB**: Used to check the reputation of an IP address.
-- **VirusTotal**: Scans URLs for malicious content.
-- **Google DNS**: Resolves domain names to IP addresses.
+## 📊 APIs Used
+- **AbuseIPDB**: IP reputation checking
+- **VirusTotal**: URL and content scanning
+- **Google DNS**: Domain resolution
 
-### API Key Storage
+## ⚠️ Important Notes
+- Keep API keys secure
+- Regular updates recommended
+- Use alongside other security measures
+- Monitor API usage limits
+- Regular backups recommended
+- Keep Chrome updated
 
-The API keys entered by the user are stored locally in Chrome using `chrome.storage.local`, ensuring user privacy.
+## 🤝 Contributing
+We welcome contributions to improve CyberShield! Here's how you can help:
 
-## Screenshots
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
 
-![Popup Interface](https://samrat-sarkar.github.io/cybershield-extension/screenshots/img1.png)
-![Risk Analysis Overlay](https://samrat-sarkar.github.io/cybershield-extension/screenshots/img2.png)
-![Extension in Action](https://samrat-sarkar.github.io/cybershield-extension/screenshots/img3.png)
+## 📄 License
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 👤 Authors
+- **Samrat Sarkar**
+  - LinkedIn: [samratsarkar9999](https://www.linkedin.com/in/samratsarkar9999/)
+  - Website: [samratsarkar.in](https://samratsarkar.in/)
+- **Vishal Shukla**
+  - LinkedIn: [vishal-shukla11](https://www.linkedin.com/in/vishal-shukla11/)
+
+## 📞 Support
+If you encounter any issues or have questions, please:
+1. Check the existing issues
+2. Create a new issue with detailed information
+3. Include system specifications and error messages
+
+## 🏆 Recognition
+Presented at **Hack IIT Kanpur Hackathon 2025**
 
 ---
 
-Developed by **Samrat Sarkar and Vishal Shukla**  
-Presented at **Hack IIT Kanpur Hackathon 2025**
+**CyberShield - Your Browser's Security Guardian** 🛡️
