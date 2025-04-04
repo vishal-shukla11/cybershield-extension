@@ -3,6 +3,8 @@
 ## 📝 Description
 CyberShield is a powerful Chrome extension designed to protect users from phishing websites and malicious content. It provides real-time website safety analysis by checking URLs, IP reputation, and scanning for malicious activity using services like AbuseIPDB and VirusTotal. The extension offers an intuitive risk assessment overlay for informed and secure browsing.
 
+[![Chrome Web Store](https://img.shields.io/badge/Chrome%20Web%20Store-CyberShield-blue)](https://chrome.google.com/webstore/detail/obbalfdkjfnffogbjaalcepkfpebchip)
+
 ## ✨ Features
 - 🔍 Real-time website URL analysis
 - 🌐 IP reputation checking via AbuseIPDB
