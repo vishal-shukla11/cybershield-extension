@@ -97,7 +97,7 @@ We welcome contributions to improve CyberShield! Here's how you can help:
   - Website: [samratsarkar.in](https://samratsarkar.in/)
 - **Vishal Shukla**
   - LinkedIn: [vishal-shukla11](https://www.linkedin.com/in/vishal-shukla11/)
-  - Website: [samratsarkar.in](https://vishal11.tech/)
+  - Website: [vishal11.tech](https://vishal11.tech/)
 
 ## 📞 Support
 If you encounter any issues or have questions, please:
